@@ -1,0 +1,423 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/TooTallNate/node-bindings"
+
+    >bindings (v1.2.1)</a>
+</h1>
+<h4>Helper module for loading your native module's .node file</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.bindings">module bindings</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.bindings">
+            function <span class="apidocSignatureSpan"></span>bindings
+            <span class="apidocSignatureSpan">(opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.getFileName">
+            function <span class="apidocSignatureSpan">bindings.</span>getFileName
+            <span class="apidocSignatureSpan">(calling_file)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.getRoot">
+            function <span class="apidocSignatureSpan">bindings.</span>getRoot
+            <span class="apidocSignatureSpan">(file)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.bindings.bindings">module bindings.bindings</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.bindings.bindings">
+            function <span class="apidocSignatureSpan">bindings.</span>bindings
+            <span class="apidocSignatureSpan">(opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.bindings.getFileName">
+            function <span class="apidocSignatureSpan">bindings.bindings.</span>getFileName
+            <span class="apidocSignatureSpan">(calling_file)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bindings.bindings.getRoot">
+            function <span class="apidocSignatureSpan">bindings.bindings.</span>getRoot
+            <span class="apidocSignatureSpan">(file)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.bindings" id="apidoc.module.bindings">module bindings</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.bindings" id="apidoc.element.bindings.bindings">
+        function <span class="apidocSignatureSpan"></span>bindings
+        <span class="apidocSignatureSpan">(opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function bindings(opts) {
+
+  // Argument surgery
+  if (typeof opts == &#x27;string&#x27;) {
+    opts = { bindings: opts }
+  } else if (!opts) {
+    opts = {}
+  }
+  opts.__proto__ = defaults
+
+  // Get the module root
+  if (!opts.module_root) {
+    opts.module_root = exports.getRoot(exports.getFileName())
+  }
+
+  // Ensure the given bindings name ends with .node
+  if (path.extname(opts.bindings) != &#x27;.node&#x27;) {
+    opts.bindings += &#x27;.node&#x27;
+  }
+
+  var tries = []
+    , i = 0
+    , l = opts.try.length
+    , n
+    , b
+    , err
+
+  for (; i&#x3c;l; i++) {
+    n = join.apply(null, opts.try[i].map(function (p) {
+      return opts[p] || p
+    }))
+    tries.push(n)
+    try {
+      b = opts.path ? require.resolve(n) : require(n)
+      if (!opts.path) {
+        b.path = n
+      }
+      return b
+    } catch (e) {
+      if (!/not find/i.test(e.message)) {
+        throw e
+      }
+    }
+  }
+
+  err = new Error(&#x27;Could not locate the bindings file. Tried:\n&#x27;
+    + tries.map(function (a) { return opts.arrow + a }).join(&#x27;\n&#x27;))
+  err.tries = tries
+  throw err
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.getFileName" id="apidoc.element.bindings.getFileName">
+        function <span class="apidocSignatureSpan">bindings.</span>getFileName
+        <span class="apidocSignatureSpan">(calling_file)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getFileName(calling_file) {
+  var origPST = Error.prepareStackTrace
+    , origSTL = Error.stackTraceLimit
+    , dummy = {}
+    , fileName
+
+  Error.stackTraceLimit = 10
+
+  Error.prepareStackTrace = function (e, st) {
+    for (var i=0, l=st.length; i&#x3c;l; i++) {
+      fileName = st[i].getFileName()
+      if (fileName !== __filename) {
+        if (calling_file) {
+            if (fileName !== calling_file) {
+              return
+            }
+        } else {
+          return
+        }
+      }
+    }
+  }
+
+  // run the &#x27;prepareStackTrace&#x27; function above
+  Error.captureStackTrace(dummy)
+  dummy.stack
+
+  // cleanup
+  Error.prepareStackTrace = origPST
+  Error.stackTraceLimit = origSTL
+
+  return fileName
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.getRoot" id="apidoc.element.bindings.getRoot">
+        function <span class="apidocSignatureSpan">bindings.</span>getRoot
+        <span class="apidocSignatureSpan">(file)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getRoot(file) {
+  var dir = dirname(file)
+    , prev
+  while (true) {
+    if (dir === &#x27;.&#x27;) {
+      // Avoids an infinite loop in rare cases, like the REPL
+      dir = process.cwd()
+    }
+    if (exists(join(dir, &#x27;package.json&#x27;)) || exists(join(dir, &#x27;node_modules&#x27;))) {
+      // Found the &#x27;package.json&#x27; file or &#x27;node_modules&#x27; dir; we&#x27;re done
+      return dir
+    }
+    if (prev === dir) {
+      // Got to the top
+      throw new Error(&#x27;Could not find module root given file: &#x22;&#x27; + file
+                    + &#x27;&#x22;. Do you have a `package.json` file? &#x27;)
+    }
+    // Try the parent dir next
+    prev = dir
+    dir = join(dir, &#x27;..&#x27;)
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.bindings.bindings" id="apidoc.module.bindings.bindings">module bindings.bindings</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.bindings.bindings" id="apidoc.element.bindings.bindings.bindings">
+        function <span class="apidocSignatureSpan">bindings.</span>bindings
+        <span class="apidocSignatureSpan">(opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function bindings(opts) {
+
+  // Argument surgery
+  if (typeof opts == &#x27;string&#x27;) {
+    opts = { bindings: opts }
+  } else if (!opts) {
+    opts = {}
+  }
+  opts.__proto__ = defaults
+
+  // Get the module root
+  if (!opts.module_root) {
+    opts.module_root = exports.getRoot(exports.getFileName())
+  }
+
+  // Ensure the given bindings name ends with .node
+  if (path.extname(opts.bindings) != &#x27;.node&#x27;) {
+    opts.bindings += &#x27;.node&#x27;
+  }
+
+  var tries = []
+    , i = 0
+    , l = opts.try.length
+    , n
+    , b
+    , err
+
+  for (; i&#x3c;l; i++) {
+    n = join.apply(null, opts.try[i].map(function (p) {
+      return opts[p] || p
+    }))
+    tries.push(n)
+    try {
+      b = opts.path ? require.resolve(n) : require(n)
+      if (!opts.path) {
+        b.path = n
+      }
+      return b
+    } catch (e) {
+      if (!/not find/i.test(e.message)) {
+        throw e
+      }
+    }
+  }
+
+  err = new Error(&#x27;Could not locate the bindings file. Tried:\n&#x27;
+    + tries.map(function (a) { return opts.arrow + a }).join(&#x27;\n&#x27;))
+  err.tries = tries
+  throw err
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.bindings.getFileName" id="apidoc.element.bindings.bindings.getFileName">
+        function <span class="apidocSignatureSpan">bindings.bindings.</span>getFileName
+        <span class="apidocSignatureSpan">(calling_file)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getFileName(calling_file) {
+  var origPST = Error.prepareStackTrace
+    , origSTL = Error.stackTraceLimit
+    , dummy = {}
+    , fileName
+
+  Error.stackTraceLimit = 10
+
+  Error.prepareStackTrace = function (e, st) {
+    for (var i=0, l=st.length; i&#x3c;l; i++) {
+      fileName = st[i].getFileName()
+      if (fileName !== __filename) {
+        if (calling_file) {
+            if (fileName !== calling_file) {
+              return
+            }
+        } else {
+          return
+        }
+      }
+    }
+  }
+
+  // run the &#x27;prepareStackTrace&#x27; function above
+  Error.captureStackTrace(dummy)
+  dummy.stack
+
+  // cleanup
+  Error.prepareStackTrace = origPST
+  Error.stackTraceLimit = origSTL
+
+  return fileName
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bindings.bindings.getRoot" id="apidoc.element.bindings.bindings.getRoot">
+        function <span class="apidocSignatureSpan">bindings.bindings.</span>getRoot
+        <span class="apidocSignatureSpan">(file)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getRoot(file) {
+  var dir = dirname(file)
+    , prev
+  while (true) {
+    if (dir === &#x27;.&#x27;) {
+      // Avoids an infinite loop in rare cases, like the REPL
+      dir = process.cwd()
+    }
+    if (exists(join(dir, &#x27;package.json&#x27;)) || exists(join(dir, &#x27;node_modules&#x27;))) {
+      // Found the &#x27;package.json&#x27; file or &#x27;node_modules&#x27; dir; we&#x27;re done
+      return dir
+    }
+    if (prev === dir) {
+      // Got to the top
+      throw new Error(&#x27;Could not find module root given file: &#x22;&#x27; + file
+                    + &#x27;&#x22;. Do you have a `package.json` file? &#x27;)
+    }
+    // Try the parent dir next
+    prev = dir
+    dir = join(dir, &#x27;..&#x27;)
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
